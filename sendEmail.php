@@ -1,43 +1,71 @@
 <?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Ambil data dari formulir
-    $name = $_POST["name"];
-    $message = $_POST["message"];
-    
-    // Pemrosesan file gambar jika ada
-    $image = $_FILES["image"];
-    $image_name = $image["name"];
-    $image_tmp_name = $image["tmp_name"];
-    $image_type = $image["type"];
-    $image_size = $image["size"];
-    
-    // Baca isi file gambar
-    $image_data = file_get_contents($image_tmp_name);
-    
-    // Konfigurasi email
-    $to = "tujuan@example.com";
-    $subject = "Pesan dari ".$name;
-    $body = $message;
-    $headers = "From: ".$name."\r\n";
-    $headers .= "Reply-To: ".$name."\r\n";
-    $headers .= "Content-Type: multipart/mixed; boundary=\"PHP-mixed-".$random_hash."\"";
-    
-    // Attachment untuk gambar
-    $attachment = chunk_split(base64_encode($image_data));
-    $headers .= "--PHP-mixed-".$random_hash."\r\n";
-    $headers .= "Content-Type: image/jpeg; name=\"".$image_name."\"\r\n";
-    $headers .= "Content-Transfer-Encoding: base64\r\n";
-    $headers .= "Content-Disposition: attachment\r\n\r\n";
-    $headers .= $attachment."\r\n";
-    
-    // Kirim email
-    if (mail($to, $subject, $body, $headers)) {
-        echo "Email berhasil dikirim.";
-    } else {
-        echo "Gagal mengirim email.";
-    }
-} else {
-    // Jika bukan metode POST, tampilkan pesan error
-    echo "Metode tidak valid.";
-}
-?>
+
+session_start();
+require "koneksi.php";
+
+require_once("PHPMailer/PHPMailer.php");
+require_once("PHPMailer/SMTP.php");
+require_once("PHPMailer/Exception.php");
+
+use PHPMailer\PHPMailer\PHPMailer;
+
+function redirectToIndex()
+   {
+   header("Location: ./isi_data.php");
+   exit;
+   }
+
+   function sendMail($nama, $nik, $alamat, $n_hp, $pesan, $subject, $date)
+   {
+      echo "<h1>kjabsdkbasjkdbasdasdasdasd</h1>";
+     include './configEmail.php';
+   
+     $mail = new PHPMailer();
+     $mail->isSMTP();
+     $mail->Host = "smtp.gmail.com";
+     $mail->SMTPAuth = true;
+     $mail->Username = $myemail;
+     $mail->Password = $mypassword;
+     $mail->Port = 587;
+   
+     $mail->setFrom($myemail, $nama);
+     $mail->addReplyTo($pesan, $nama);
+     $mail->addAddress($myemail);
+   
+     $mail->isHTML(true);
+     $mail->Subject = $subject;
+     $mail->Body = "<b>Nama:</b> {$nama}<br><b>NIK:</b> {$nik}<br><b>Alamat:</b> {$alamat}<br><b>No.HP:</b> {$n_hp}<br><br><b>Pesan:</b><br><br>
+       {$pesan}<br><br><b>Date:</b> {$date}";
+   
+     if ($mail->send()) {
+       $_SESSION["mail_success"] = true;
+     } else {
+       $_SESSION["mail_error"] = true;
+     }
+   
+     redirectToIndex();
+   }
+   
+   function start()
+   {
+     if (
+       isset($_POST["nama"]) && !empty(trim($_POST["nama"]))
+       && isset($_POST["pesan"]) && !empty(trim($_POST["pesan"]))
+     ) {
+   
+       $nama = !empty($_POST["nama"]) ? $_POST["nama"] : "Not informed";
+       $nik = $_POST['nik'];
+       $alamat = $_POST['alamat'];
+       $n_hp = $_POST['hp'];
+       $pesan = trim(str_replace("\n", '<br />', $_POST["pesan"]));
+       $subject = "Contact";
+       $date = date("d/m/Y H:i");
+   
+       sendMail($nama, $nik, $alamat, $n_hp, $pesan, $subject, $date);
+     } else {
+       $_SESSION["mail_error"] = true;
+       redirectToIndex();
+     }
+   }
+   
+   start();

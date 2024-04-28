@@ -48,7 +48,7 @@
                 </form>
 
                 <?php
-                    if(isset($_POST['btntampilkan'])) :
+                    if(isset($_POST['btntampilkan'])) {
                 ?>
 
                 <div class="table-responsive">
@@ -65,28 +65,24 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php
+                        <?php
+                            $tgl1 = $_POST['tanggal1'];
+                            $tgl2 = $_POST['tanggal2'];
 
-                                $tgl1 = $_POST['tanggal1'];
-                                $tgl2 = $_POST['tanggal2'];
-                                // echo "Tanggal Awal: " . $tgl1 . "<br>";
-                                // echo "Tanggal Akhir: " . $tgl2 . "<br>";
-
-                                // // Eksekusi query SQL
-                                $tampil_data = mysqli_query($koneksi, "SELECT * FROM tamu where time BETWEEN '$tgl1' and '$tgl2' order by id_tamu desc");
-                                $no = 1;
-                                while($data = mysqli_fetch_array($tampil_data)){
-                                ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $data['time']?></td>
-                                        <td><?= $data['nama']?></td>
-                                        <td><?= $data['nik']?></td>
-                                        <td><?= $data['alamat']?></td>
-                                        <td><?= $data['hp']?></td>
-                                        <td><?= $data['pesan']?></td>
-                                    </tr>
-                                <?php } ?>
+                            $tampil_data = mysqli_query($koneksi, "SELECT * FROM tamu WHERE time BETWEEN '$tgl1' AND '$tgl2'");
+                            $no = 1;
+                            while ($data = mysqli_fetch_array($tampil_data)) {
+                        ?>
+                            <tr>
+                                <td><?= $no++ ?></td>
+                                <td><?= $data['time'] ?></td>
+                                <td><?= $data['nama'] ?></td>
+                                <td><?= $data['nik'] ?></td>
+                                <td><?= $data['alamat'] ?></td>
+                                <td><?= $data['hp'] ?></td>
+                                <td><?= $data['pesan'] ?></td>
+                            </tr>
+                        <?php } ?>
                         </tbody>
                     </table>
                     <center>
@@ -102,7 +98,7 @@
                     </center>
                 </div>
 
-                    <?php endif; ?>
+                    <?php } ?>
 
             </div>
         </div>

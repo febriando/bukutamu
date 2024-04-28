@@ -12,4 +12,7 @@
     }
 
     echo json_encode(array("result" => $data));
+
+    $connect->close();
+    $conn->close();
 ?>

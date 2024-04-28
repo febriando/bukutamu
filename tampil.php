@@ -4,7 +4,7 @@
                 <table class="table table-hover">
                     <tbody id="myTable">
                     <?php
-                    //panggil fungsi koneksi.php
+                    //panggil fungsi konek.php
                     include "koneksi.php";
                     $page = '';
                     if(isset($_POST["p"])){
@@ -33,7 +33,7 @@
 
 					$adjacents = "2";
                     //ambil data dari tabel tamu dan lakukan perulangan dengan while
-                    $ambildata=mysqli_query($koneksi,"SELECT * FROM tamu ORDER BY id_tamu DESC LIMIT $start_from, $record_per_page")or die(mysqli_error($koneksi));
+                    $ambildata=mysqli_query($conn,"SELECT * FROM tamu ORDER BY id_tamu DESC LIMIT $start_from, $record_per_page")or die(mysqli_error($conn));
                     $jumlah=mysqli_num_rows($ambildata);
 					
                    while($a = mysqli_fetch_assoc($ambildata))
@@ -67,7 +67,7 @@
                     <ul class="pagination pagination-sm">
                         <?php
                         //$page_query = "SELECT * FROM tabel tamu order by id_tamu DESC";
-                        $page_result = mysqli_query($koneksi,"SELECT * FROM tamu order by id_tamu DESC");
+                        $page_result = mysqli_query($conn,"SELECT * FROM tamu order by id_tamu DESC");
                         $total_records = mysqli_num_rows($page_result);
                         $total_pages = ceil($total_records/$record_per_page);
 					    $second_last = $total_pages - 1;
